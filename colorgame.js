@@ -1,44 +1,53 @@
 var numberOfcircles = 6;
-var colors = generateRandomColors(numberOfcircles);
-var circles = document.querySelectorAll('.circle');
-var colorDisplay = document.getElementById('colorDisplay');
-var pickedColor = pickColor();
-var messageDisplay = document.querySelector('#message');
+var colors = [];
+var pickedColor;
 var h1 = document.querySelector('h1');
 var resetButton = document.querySelector('#reset');
-var easyBtn = document.querySelector('#easy-btn');
-var hardBtn = document.querySelector('#hard-btn');
+var circles = document.querySelectorAll('.circle');
+var modeButtons = document.querySelectorAll('.mode');
+var messageDisplay = document.querySelector('#message');
+var colorDisplay = document.getElementById('colorDisplay');
 
-easyBtn.addEventListener('click', function(){
-  easyBtn.classList.add('selected');
-  hardBtn.classList.remove('selected');
-  numberOfcircles = 3;
-  colors = generateRandomColors(numberOfcircles);
-  pickedColor = pickColor();
-  colorDisplay.textContent = pickedColor;
-  for (var i = 0; i < circles.length; i++) {
-    if(colors[i]){
-      circles[i].style.backgroundColor = colors[i];
-    } else {
-      circles[i].style.display = 'none';
-    }
-  };
-});
+init();
 
-hardBtn.addEventListener('click', function(){
-  hardBtn.classList.add('selected');
-  easyBtn.classList.remove('selected');
-  numberOfcircles = 6;
-  colors = generateRandomColors(numberOfcircles);
-  pickedColor = pickColor();
-  colorDisplay.textContent = pickedColor;
-  for (var i = 0; i < circles.length; i++) {
-      circles[i].style.backgroundColor = colors[i];
-      circles[i].style.display = 'block';
+function init(){
+  // mode buttons event listeners
+  setModeButtons();
+  setUpCircles();
+  reset();
+};
+
+function setModeButtons(){
+  for (var i = 0; i < modeButtons.length; i++) {
+    modeButtons[i].addEventListener('click', function(){
+      modeButtons[0].classList.remove('selected');
+      modeButtons[1].classList.remove('selected');
+      this.classList.add('selected');
+      this.textContent === 'Easy' ? numberOfcircles = 3: numberOfcircles = 6;
+      reset();
+    });
   }
-});
+}
 
-resetButton.addEventListener('click', function(){
+function setUpCircles(){
+  for (var i = 0; i < circles.length; i++) {
+    // adds click event listener
+    circles[i].addEventListener('click', function(){
+      var clickedColor = this.style.backgroundColor;
+      if(clickedColor === pickedColor){
+        messageDisplay.textContent = 'Correct';
+        changeColors(clickedColor);
+        h1.style.backgroundColor = clickedColor;
+        resetButton.textContent = 'Play Again';
+      } else{
+        this.style.backgroundColor = '#232323';
+        messageDisplay.textContent = 'Try Again';
+      }
+    });
+  }
+}
+
+function reset(){
   h1.style.backgroundColor = '#6686ba';
   resetButton.textContent = 'New Colors';
   // generate all new Colors
@@ -46,32 +55,21 @@ resetButton.addEventListener('click', function(){
   // pick a new random color from array
   pickedColor = pickColor()
   colorDisplay.textContent = pickedColor;
+  messageDisplay.textContent = '';
   // change colors of circles
   for (var i = 0; i < circles.length; i++) {
-    circles[i].style.backgroundColor = colors[i];
-  };
-});
-
-colorDisplay.textContent = pickedColor;
-
-for (var i = 0; i < circles.length; i++) {
-  // adds initila color to suqares
-  circles[i].style.backgroundColor = colors[i];
-  // adds click event listener
-  circles[i].addEventListener('click', function(){
-    var clickedColor = this.style.backgroundColor;
-    if(clickedColor === pickedColor){
-      messageDisplay.textContent = 'Correct';
-      changeColors(clickedColor);
-      h1.style.backgroundColor = clickedColor;
-      resetButton.textContent = 'Play Again';
-    } else{
-      this.style.backgroundColor = '#232323';
-      messageDisplay.textContent = 'Try Again';
+    if(colors[i]){
+      circles[i].style.display = 'block';
+      circles[i].style.backgroundColor = colors[i];
+    } else {
+      circles[i].style.display = 'none';
     }
-  });
-};
+  };
+}
 
+resetButton.addEventListener('click', function(){
+  reset();
+});
 
 function changeColors(color){
   for (var i = 0; i < circles.length; i++) {
