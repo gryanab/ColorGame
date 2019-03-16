@@ -5,4 +5,8 @@ It is build around HTML/CSS/JS.
 
 The Goal is to identify the correct color proposed in the title. It contains 2 different modes : Easy (3 blocks) and Hard (6 blocks). 
 
+## Run 
+
+Simply open the '.html' file on your browser and have fun.
+
 
